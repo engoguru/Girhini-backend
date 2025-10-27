@@ -1,8 +1,13 @@
 
 import dotenv from "dotenv";
+import rateLimit from 'express-rate-limit';
 import express from "express";
+import helmet from "helmet";
+import compression from "compression";
+
 
 import cors from 'cors';
+import cookieParser from "cookie-parser"
 import connectDB from "./DB/connectDB.js";
 
 import conatctRoute from "./routes/contactRoutes.js";
@@ -18,11 +23,20 @@ dotenv.config();
 
 
 const app = express();
-const PORT = 4500;
+const PORT = process.env.PORT||4500;
 
 // Health check route
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests, please try again later.',
+});
 
+app.use(limiter);
+app.use(compression());
+app.use(helmet());
 // Middleware to parse JSON requests
+app.use(cookieParser())
 // CORS
 const allowedOrigins = ['http://localhost:5173'];
 app.use(cors({

@@ -1,14 +1,23 @@
+
+import dotenv from "dotenv";
+dotenv.config();
 import { v2 as cloudinary } from "cloudinary";
 import galleryModel from "../models/galleryModel.js";
 
-// ✅ Configure Cloudinary (use .env in production)
+// Configure Cloudinary (use .env in production)
+// cloudinary.config({
+//   cloud_name: "dlntaougd",
+//   api_key: "146485128726459",
+//   api_secret: "yO1GsbBFJVA9_dzNrPqbFZZBAtw",
+// });
 cloudinary.config({
-  cloud_name: "dlntaougd",
-  api_key: "146485128726459",
-  api_secret: "yO1GsbBFJVA9_dzNrPqbFZZBAtw",
+  cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Upload Multiple Images to Cloudinary (inline function)
+
+// Upload Multiple Images to Cloudinary (inline function)
 const uploadMultipleToCloudinary = async (files, folder = "Gallery") => {
   try {
     if (!files || files.length === 0) {
@@ -45,7 +54,7 @@ const uploadMultipleToCloudinary = async (files, folder = "Gallery") => {
   }
 };
 
-// ✅ Controller to create gallery
+// Controller to create gallery
 export const createGallery = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
@@ -75,7 +84,7 @@ export const createGallery = async (req, res) => {
   }
 };
 
-// ✅ GET all galleries
+// GET all galleries
 export const getAllGallery = async (req, res) => {
   try {
     const galleries = await galleryModel.find().sort({ createdAt: -1 }); // optional: newest first
@@ -90,7 +99,7 @@ export const getAllGallery = async (req, res) => {
   }
 };
 
-// ✅ UPDATE gallery: delete selected images + upload new ones
+//  UPDATE gallery: delete selected images + upload new ones
 export const updateGallery = async (req, res) => {
   try {
     const { id } = req.params; // MongoDB document ID

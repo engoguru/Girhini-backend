@@ -6,7 +6,7 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import twilio from "twilio";
-console.log(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN)
+console.log(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 // Helper: Generate random 6-digit OTP
@@ -35,7 +35,7 @@ export const registerUser = async (req, res) => {
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 min expiry
 
-    // ✅ Create a new user with OTP stored
+    //  Create a new user with OTP stored
     const newUser = new userModel({
       name,
       email,
@@ -50,7 +50,7 @@ export const registerUser = async (req, res) => {
 
     await newUser.save();
 
-    // ✅ Send OTP via WhatsApp using Twilio
+    //  Send OTP via WhatsApp using Twilio
     await client.messages.create({
       from: process.env.TWILIO_WHATSAPP_NUMBER,
       to: `whatsapp:${whatsAppNumber}`,
@@ -91,13 +91,13 @@ export const verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "OTP has expired. Please register again." });
     }
 
-    // ✅ Mark verified and clear OTP
+    //  Mark verified and clear OTP
     user.whatsAppNumber.isVerified = true;
     user.whatsAppNumber.otp = null;
     user.whatsAppNumber.otpExpires = null;
     await user.save();
 
-    // ✅ Create JWT token
+    //  Create JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET,
@@ -146,11 +146,16 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      {
+        id: user._id,                      // MongoDB _id
+        email: user.email,  
+        role:user.role    ,            // email
+        whatsAppNumber: user.whatsAppNumber?.number, // optional chaining in case it’s undefined
+      },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
- // Set token in cookie
+    // Set token in cookie
     res.cookie("token", token, {
       httpOnly: true, // prevents client JS access (recommended)
       secure: process.env.NODE_ENV === "production", // send cookie only over https in prod
@@ -172,3 +177,4 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+

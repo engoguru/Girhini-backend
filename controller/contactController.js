@@ -1,6 +1,6 @@
 import Contact from "../models/contactModel.js";
 
-// ✅ CREATE Contact
+//  CREATE Contact
 export const createContact = async (req, res) => {
     console.log(req.body,"errvhi")
   try {
@@ -38,7 +38,7 @@ export const createContact = async (req, res) => {
 
 
 
-// ✅ READ All Contacts
+//  READ All Contacts
 export const getContacts = async (req, res) => {
   try {
     const contacts = await Contact.find().sort({ createdAt: -1 });
@@ -48,7 +48,7 @@ export const getContacts = async (req, res) => {
   }
 };
 
-// ✅ READ Single Contact
+//  READ Single Contact
 export const getContactById = async (req, res) => {
   try {
     const contact = await Contact.findById(req.params.id);
@@ -61,7 +61,7 @@ export const getContactById = async (req, res) => {
   }
 };
 
-// ✅ UPDATE Contact (supports status update)
+// UPDATE Contact (supports status update)
 export const updateContact = async (req, res) => {
   try {
     const { name, email, contact, category, message, status } = req.body;
@@ -89,7 +89,7 @@ export const updateContact = async (req, res) => {
   }
 };
 
-// ✅ DELETE Contact
+//  DELETE Contact
 export const deleteContact = async (req, res) => {
   try {
     const contact = await Contact.findByIdAndDelete(req.params.id);

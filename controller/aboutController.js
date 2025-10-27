@@ -1,10 +1,21 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { v2 as cloudinary } from 'cloudinary';
 import About from '../models/aboutModel.js';
+// cloudinary.config({
+//   cloud_name: "dlntaougd",
+//   api_key: "146485128726459",
+//   api_secret: "yO1GsbBFJVA9_dzNrPqbFZZBAtw",
+// });
+
+
 cloudinary.config({
-  cloud_name: "dlntaougd",
-  api_key: "146485128726459",
-  api_secret: "yO1GsbBFJVA9_dzNrPqbFZZBAtw",
+  cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET,
 });
+
 const uploadToCloudinary = (fileBuffer, folder = "about", resource_type = "auto") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
