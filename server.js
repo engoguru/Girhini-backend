@@ -38,7 +38,7 @@ app.use(helmet());
 // Middleware to parse JSON requests
 app.use(cookieParser())
 // CORS
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173',"https://girhini-frontend.onrender.com/","https://girhini-frontend.onrender.com"];
 app.use(
   cors({
     origin: function (origin, callback) {
